@@ -5,19 +5,16 @@
 The Artifact Pyramid is a structured methodology for organizing AI agent research outputs across three fidelity layers. Just as progressive disclosure governs how we feed agents context, the Artifact Pyramid governs what they produce — enabling downstream agents and humans to consume at the depth they need.
 
 ```mermaid
-flowchart LR
+flowchart TD
     subgraph Layer3["Layer 3 — Published Artifacts 🎯"]
-        direction LR
         A3[Articles] --- P3[Presentations] --- S3[Specs] --- D3[Decisions]
     end
 
     subgraph Layer2["Layer 2 — Molecules & Syntheses 🧩"]
-        direction LR
         M1[Narratives] --- M2[Cross-references] --- M3[Domain alloys]
     end
 
     subgraph Layer1["Layer 1 — Raw Sources & Atoms 📦"]
-        direction LR
         S1[Captured pages] --- S2[PDFs] --- S3a[Transcripts] --- S4[Atomic facts]
     end
 
