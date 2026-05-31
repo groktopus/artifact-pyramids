@@ -10,8 +10,9 @@ description: >-
 license: MIT
 compatibility: Agent-agnostic — concepts apply to any AI agent workflow. Scripts require Python 3.9+ and a POSIX shell.
 metadata:
-  spec-version: "1.0"
+  spec-version: "1.1"
   source: https://github.com/groktopus/artifact-pyramids
+  canonical-article: https://www.groktop.us/artifact-pyramid-progressive-disclosure/
 ---
 
 # Artifact Pyramids for Agentic AI Research
@@ -64,7 +65,8 @@ The pyramid is consumed top-down (human reads the article, drills to molecules f
 
 ```bash
 # Scaffold a new research project
-cp -r assets/pyramid-template.md ./my-project/00-index.md
+mkdir -p my-project/{01-sources,01-atoms,02-molecules,03-published}
+cp assets/pyramid-template.md ./my-project/00-index.md
 
 # Check pyramid health of an existing project
 scripts/pyramid-status.sh ./my-project
@@ -72,6 +74,25 @@ scripts/pyramid-status.sh ./my-project
 # Extract atoms from source text
 scripts/extract-atoms.py ./my-project/01-sources/paper-1.txt
 ```
+
+## Project Structure
+
+A standard Artifact Pyramid project follows this directory layout:
+
+```
+my-project/
+├── 00-index.md              # Project scaffold (from template)
+├── 01-sources/              # Layer 1: captured materials (PDFs, pages, transcripts)
+├── 01-atoms/                # Layer 1: extracted atomic facts and claims
+├── 02-molecules/            # Layer 2: connected narratives and syntheses
+├── 03-published/            # Layer 3: polished artifacts (articles, slides, reports)
+└── artifact-inventory.md    # Cross-layer tracking (from template)
+```
+
+The numbered prefixes (`01-`, `02-`, `03-`) keep layers ordered in directory listings
+and make pyramid hierarchy visible at a glance. Files within each directory use
+descriptive names like `source-001.md`, `molecule-scaling-laws.md`, or
+`article-scale-vs-quality.md`.
 
 ## Key Principles
 
