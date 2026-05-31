@@ -1,7 +1,6 @@
 # Artifact Pyramid Project Scaffold
 
 Copy this file into your research project as `00-index.md` and fill in the blanks.
-Use it as the index and navigation hub for your project's artifact pyramid.
 
 ---
 
@@ -9,66 +8,37 @@ Use it as the index and navigation hub for your project's artifact pyramid.
 
 ## Overview
 
-One paragraph describing the research question or problem this project addresses.
+Research question or problem. One paragraph.
 
+**Mission Brief:** [Brief from orchestrator]
 **Started:** YYYY-MM-DD
-**Status:** [exploration / active-research / synthesis / publishing / complete]
+**Status:** exploration / gathering / analysis / summary / complete
 
-## Research Question
+## Layer 1: Summary
 
-What are you trying to understand, build, or decide?
+| Status | File |
+|--------|------|
+| draft / review / published | `01-summary/` |
 
-## Quick Links
+## Layer 2: Analysis Collection
 
-- **Layer 1 — Raw Sources & Atoms:** `01-sources/` and `01-atoms/`
-- **Layer 2 — Molecules & Syntheses:** `02-molecules/`
-- **Layer 3 — Published Artifacts:** `03-published/`
+| Dimension | File | Status | Key Claim |
+|-----------|------|--------|-----------|
+| | `02-analysis/` | draft / review / complete | |
 
-## Layer 1: Sources and Atoms
+## Layer 3: Detailed Dossiers
 
-### Sources
-
-| ID | Title | Type | Captured | URL/Path |
-|----|-------|------|----------|----------|
-| source-001 | | paper / article / transcript / log | | |
-| source-002 | | | | |
-| source-003 | | | | |
-
-### Atom Summary
-
-| Domain | Atom Count | Notable Claims |
-|--------|-----------|----------------|
-| | | |
-| | | |
-
-## Layer 2: Molecules and Syntheses
-
-| Molecule | Domains | Status | Key Claim |
-|----------|---------|--------|-----------|
-| | | draft / review / complete | |
-| | | | |
-| Alloy: | | | |
-
-## Layer 3: Published Artifacts
-
-| Artifact | Type | Audience | Status | Link |
-|----------|------|----------|--------|------|
-| | article / slides / report / spec | | draft / review / published | |
+| Source ID | Title | Type | Captured | URL |
+|-----------|-------|------|----------|-----|
+| | | paper / transcript / data | | |
 
 ## Open Questions
 
 1.
 2.
-3.
 
 ## Quality Gate Status
 
-- [ ] Gate A (Layer 1 completeness)
-- [ ] Gate B (Layer 2 integrity)
-- [ ] Gate C (Layer 3 readiness)
-
-## Key Decisions
-
-| Date | Decision | Rationale |
-|------|----------|-----------|
-| | | |
+- [ ] Gate C (L3 dossiers ready for analysis)
+- [ ] Gate B (L2 analysis ready for summary)
+- [ ] Gate A (L1 summary ready for distribution)

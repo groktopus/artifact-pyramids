@@ -1,25 +1,34 @@
 # Artifact Pyramids
 
-**Progressive disclosure for what AI agents produce.**
+**Progressive disclosure for what AI agents produce — Summary → Analysis Collection → Dossiers.**
 
-The Artifact Pyramid is a structured methodology for organizing AI agent research outputs across three fidelity layers. Just as progressive disclosure governs how we feed agents context, the Artifact Pyramid governs what they produce — enabling downstream agents and humans to consume at the depth they need.
+The Artifact Pyramid is a structured methodology for organizing AI agent research outputs across three layers of increasing depth. Just as progressive disclosure governs how we feed agents context, the Artifact Pyramid governs what they produce — enabling downstream agents and humans to consume at the depth they need.
+
+| Layer | What it contains | Who consumes it |
+|-------|-----------------|-----------------|
+| **L1: Summary** | Research question, key findings, implications (one file) | PM agents, executives, quick scanners |
+| **L2: Analysis Collection** | Per-dimension files (market, competitive, technical, risk) | Analysts, domain-specific agents |
+| **L3: Detailed Dossiers** | Source excerpts, transcripts, raw data, methodology | Validators, deep-dive researchers |
 
 ```mermaid
 flowchart TD
-    subgraph Layer3["Layer 3 — Published Artifacts 🎯"]
-        A3[Articles] --- P3[Presentations] --- S3[Specs] --- D3[Decisions]
+    subgraph Layer1["Layer 1 — Summary 🎯"]
+        direction LR
+        S1[Key findings] --- S2[Implications] --- S3[Links to analysis]
     end
 
-    subgraph Layer2["Layer 2 — Molecules & Syntheses 🧩"]
-        M1[Narratives] --- M2[Cross-references] --- M3[Domain alloys]
+    subgraph Layer2["Layer 2 — Analysis Collection 🧩"]
+        direction LR
+        A1[Market] --- A2[Competitive] --- A3[Technical] --- A4[Risk]
     end
 
-    subgraph Layer1["Layer 1 — Raw Sources & Atoms 📦"]
-        S1[Captured pages] --- S2[PDFs] --- S3a[Transcripts] --- S4[Atomic facts]
+    subgraph Layer3["Layer 3 — Detailed Dossiers 📦"]
+        direction LR
+        D1[Source excerpts] --- D2[Transcripts] --- D3[Raw data] --- D4[Methodology]
     end
 
-    Layer2 --> Layer3
     Layer1 --> Layer2
+    Layer2 --> Layer3
 
     style Layer1 fill:#1a1a2e,stroke:#e94560,color:#fff
     style Layer2 fill:#16213e,stroke:#0f3460,color:#fff
@@ -56,13 +65,13 @@ artifact-pyramids/
 ├── README.md                   # This file
 ├── LICENSE                     # MIT
 ├── scripts/
-│   ├── pyramid-status.sh       # Audit a project directory for pyramid coverage
+│   ├── pyramid-status.sh       # Audit a project directory for structural coverage
 │   └── extract-atoms.py        # Extract atomic claims from source text
 ├── references/
 │   ├── artifact-pyramid-framework.md   # Full conceptual foundation
-│   ├── pipeline-stages.md              # Detailed transformation rules per layer
+│   ├── pipeline-stages.md              # Detailed layer definitions and navigation format
 │   ├── quality-gates.md                # Verification criteria at each layer
-│   └── synthetic-example.md            # Complete worked example (synthetic data)
+│   └── synthetic-example.md            # Complete walked-through example (synthetic data)
 └── assets/
     ├── pyramid-template.md             # Project scaffold template
     └── artifact-inventory.md           # Cross-layer tracking template
@@ -80,11 +89,11 @@ Then any session with the skill loaded can call `skill_view(name='artifact-pyram
 
 ## The Three Layers
 
-| Layer | Contents | Quality Gate |
-|-------|----------|-------------|
-| **1: Raw Sources & Atoms** | Captured sources (PDFs, pages, transcripts) + extracted atomic claims | Each atom is one claim, context-independent, source-attributed |
-| **2: Molecules & Syntheses** | Connected narratives, cross-referenced knowledge, cross-domain alloys | Molecule makes a claim no atom alone makes; all traceable |
-| **3: Published Artifacts** | Articles, presentations, specs, decisions | Every claim traces to a molecule (which traces to atoms/sources) |
+| Layer | Contents | Consumed By | Who Produces |
+|-------|----------|-------------|--------------|
+| **L1: Summary** | One file — research question, key findings, implications. Links to L2 analysis files. | PM agents, executives, quick scanners | Researcher synthesizes from L2 |
+| **L2: Analysis Collection** | Per-dimension files — market, competitive, technical, risk. Self-contained, links to L3 | Domain specialists, analyst agents | Analyst extracts from L3 dossiers |
+| **L3: Detailed Dossiers** | Source excerpts, raw data tables, transcripts, methodology notes | Validators, deep-dive agents | Collector captures from primary sources |
 
 ## License
 

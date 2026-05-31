@@ -1,50 +1,32 @@
 # Artifact Inventory
 
-Track what exists at each layer of the pyramid across a research project.
-Update this as artifacts are created, promoted, or archived.
+Track what exists at each layer. Update as artifacts are promoted or archived.
 
 ---
 
-## Layer 1: Raw Sources & Atoms
+## Layer 1: Summary
 
-### Sources
+| File | Key Findings | Key Implications | Status | SOURCES Complete? |
+|------|-------------|-----------------|--------|-------------------|
+| `01-summary/` | | | draft/review/published | yes/no |
 
-| # | Source ID | Title | Type | Author(s) | Year | Captured | Format | Notes |
-|---|-----------|-------|------|-----------|------|----------|--------|-------|
-| 1 | source-001 | | paper/article | | | | PDF/HTML/txt |
-| 2 | source-002 | | transcript | | | | txt |
-| 3 | source-003 | | log/data | | | | csv/json |
-| 4 | | | | | | | |
-| 5 | | | | | | | |
+## Layer 2: Analysis Collection
 
-### Atom Registry
+| File | Dimension | Sources Claim | Key Claim | Status |
+|------|-----------|--------------|-----------|--------|
+| `02-analysis/` | | | | draft/review/complete |
+| `02-analysis/` | | | | |
 
-| Source | Atom ID | Claim Summary | Domain | Type | Contradictions? |
-|--------|---------|---------------|--------|------|-----------------|
-| source-001 | atom-001 | | | fact/claim/quote | |
-| source-001 | atom-002 | | | | |
-| source-002 | atom-003 | | | | |
-| source-002 | atom-004 | | | | |
+## Layer 3: Detailed Dossiers
 
-## Layer 2: Molecules & Syntheses
-
-| Molecule | Domains Bridged | Source Atoms | Key Emergent Claim | Status |
-|----------|----------------|--------------|-------------------|--------|
-| | | | | draft/review/complete |
-| | | | | |
-| Alloy: | | | | |
-
-## Layer 3: Published Artifacts
-
-| Artifact | Derived From Molecule(s) | Audience | Format | Status |
-|----------|--------------------------|----------|--------|--------|
-| | | | blog/slides/spec | draft/review/published |
-| | | | | |
+| Source ID | Title | Type | Captured | Evidence Count |
+|-----------|-------|------|----------|---------------|
+| | | paper/transcript/data | | |
 
 ## Quality Gate Log
 
 | Gate | Date | Verdict | Notes |
 |------|------|---------|-------|
-| A (L1) | | pass/fail | |
-| B (L2) | | pass/fail | |
-| C (L3) | | pass/fail | |
+| C (L3→L2) | | pass/fail | |
+| B (L2→L1) | | pass/fail | |
+| A (L1 publish) | | pass/fail | |
