@@ -2,108 +2,123 @@
 name: artifact-pyramids
 description: >-
   Progressive disclosure for what AI agents produce. Structure research outputs
-  across three fidelity layers — Raw Sources & Atoms, Molecules & Syntheses,
-  and Published Artifacts — so downstream agents and humans consume only as
+  across three layers of increasing depth — Summary (key findings), Analysis
+  Collection (per-dimension files), and Detailed Dossiers (source excerpts,
+  raw data, transcripts) — so downstream agents and humans consume only as
   deeply as they need. Load this skill when organizing research outputs,
-  building agentic research pipelines, or designing agent collaboration
+  building multi-agent research pipelines, or designing agent collaboration
   protocols.
 license: MIT
 compatibility: Agent-agnostic — concepts apply to any AI agent workflow. Scripts require Python 3.9+ and a POSIX shell.
 metadata:
-  spec-version: "1.1"
+  spec-version: "0.0.3"
   source: https://github.com/groktopus/artifact-pyramids
   canonical-article: https://www.groktop.us/artifact-pyramid-progressive-disclosure/
 ---
 
 # Artifact Pyramids for Agentic AI Research
 
-Progressive disclosure governs how we feed agents context. **The Artifact Pyramid extends the same principle to what agents produce.** Three layers, from atom to artifact, each consumable at its own depth.
+Progressive disclosure governs how we feed agents context: metadata at startup, instructions on activation, resources on demand. **The Artifact Pyramid applies the same principle to what agents produce.** Three layers of increasing depth, each independently consumable, each linking down to the next.
 
 ## The Pyramid
 
 ```
-          ┌─────────┐
-          │ Layer 3 │  Published Artifacts
-          │   🎯    │  Articles, presentations, specs, decisions
-          └────┬────┘
-          ┌────┴────┐
-          │ Layer 2 │  Molecules & Syntheses
-          │   🧩    │  Connected narratives, cross-referenced knowledge
-          └────┬────┘
-    ┌──────────┴──────────┐
-    │     Layer 1          │  Raw Sources & Atoms
-    │      📦              │  Captured pages, PDFs, transcripts, atomic facts
-    └─────────────────────┘
+      ┌──────────────┐
+      │  L1 SUMMARY  │  One file: research question, key findings,
+      │    🎯        │  most important implications. Links to L2 files.
+      └──────┬───────┘
+      ┌──────┴───────┐
+      │  L2 ANALYSIS │  Per-dimension files: market, competitive,
+      │  COLLECTION  │  technical feasibility, risk. Self-contained,
+      │   🧩        │  each links to L3 dossiers.
+      └──────┬───────┘
+      ┌──────┴───────┐
+      │  L3 DOSSIERS │  Source excerpts, raw data tables, interview
+      │    📦        │  transcripts, methodology notes. Reference
+      └──────────────┘  library, pulled on demand.
 ```
 
-The pyramid is consumed top-down (human reads the article, drills to molecules for claims, atoms for sources) but produced bottom-up (collect sources, extract atoms, synthesize molecules, polish into artifacts).
+The pyramid is consumed top-down but produced via recursive gap analysis: start with the summary, embed links to analysis files, write analysis files that link to dossiers, and evaluate after each round whether gaps remain.
+
+**Layer numbering is top-down** — L1 is the most distilled layer (the entry point), L3 is the most detailed (pulled on demand). This mirrors the Agent Skills input model: metadata (L1) → instructions (L2) → resources (L3).
+
+## The Navigation Mechanism
+
+Every file at every layer carries, at the bottom, an explicit `SOURCES` section with absolute path references and descriptions:
+
+```
+SOURCES (LAYER 2 NAVIGATION)
+research/analysis/market-position.md
+ -> Competitor mapping and market share analysis supporting Section 2
+research/analysis/technical-feasibility.md
+ -> Architecture evaluation supporting Section 3
+research/dossiers/competitor-profiles.md
+ -> Raw competitor data dossiers
+```
+
+These aren't footnotes. They are **navigation affordances** for agent consumers. Each description answers the question the consuming agent asks before loading: *what will I find if I go deeper?*
 
 ## Reference Files
 
 | Reference | Load when | File |
 |-----------|-----------|------|
-| Framework & Philosophy | You need the full conceptual foundation — why this exists and what problems it solves | `references/artifact-pyramid-framework.md` |
-| Pipeline Stages | You're building or running a research pipeline — detailed transformation rules per layer | `references/pipeline-stages.md` |
-| Quality Gates | You need to verify that an artifact meets the standard for its layer | `references/quality-gates.md` |
+| Framework & Symmetry | You need the full conceptual foundation — the asymmetry problem, multi-agent routing, DIKW relationship | `references/artifact-pyramid-framework.md` |
+| Pipeline Stages | You're building or auditing a pyramid — detailed definitions per layer, navigation format, production flow | `references/pipeline-stages.md` |
+| Quality Gates | You need to verify an artifact meets the standard for its layer | `references/quality-gates.md` |
 | Worked Example | You want to see a complete synthetic walkthrough of all three layers | `references/synthetic-example.md` |
+| Canonical Article | Read the published groktop.us piece — the Layer 3 artifact that defines the concept | `references/canonical-article.md` |
 
 ## Scripts
 
 | Script | Load when | File |
 |--------|-----------|------|
-| pyramid-status | You want to audit an existing research directory for pyramid coverage and gaps | `scripts/pyramid-status.sh` |
-| extract-atoms | You have raw source text and need to split it into atomic claims | `scripts/extract-atoms.py` |
+| pyramid-status | You want to audit an existing research directory for structural coverage | `scripts/pyramid-status.sh` |
+| extract-atoms | You have raw source text and need candidate atomic claims | `scripts/extract-atoms.py` |
 
 ## Templates
 
 | Template | Load when | File |
 |----------|-----------|------|
-| Project Scaffold | You're starting a new research project and need the directory skeleton | `assets/pyramid-template.md` |
-| Artifact Inventory | You need to track what exists at each layer across a research project | `assets/artifact-inventory.md` |
+| Project Scaffold | You're starting a new research project and need the index skeleton | `assets/pyramid-template.md` |
+| Artifact Inventory | You need to track what exists at each layer across a project | `assets/artifact-inventory.md` |
 
 ## Quick Start
 
 ```bash
-# Scaffold a new research project
-mkdir -p my-project/{01-sources,01-atoms,02-molecules,03-published}
+# Scaffold a new research project with all three layer directories
+mkdir -p my-project/{01-summary,02-analysis,03-dossiers}
 cp assets/pyramid-template.md ./my-project/00-index.md
 
-# Check pyramid health of an existing project
+# Check structural coverage of an existing project
 scripts/pyramid-status.sh ./my-project
 
-# Extract atoms from source text
-scripts/extract-atoms.py ./my-project/01-sources/paper-1.txt
+# Extract candidate atoms from source text
+scripts/extract-atoms.py ./my-project/03-dossiers/source-1.txt
 ```
 
 ## Project Structure
 
-A standard Artifact Pyramid project follows this directory layout:
-
 ```
 my-project/
 ├── 00-index.md              # Project scaffold (from template)
-├── 01-sources/              # Layer 1: captured materials (PDFs, pages, transcripts)
-├── 01-atoms/                # Layer 1: extracted atomic facts and claims
-├── 02-molecules/            # Layer 2: connected narratives and syntheses
-├── 03-published/            # Layer 3: polished artifacts (articles, slides, reports)
+├── 01-summary/              # L1: one file — key findings, implications, links to L2
+├── 02-analysis/             # L2: per-dimension files (market, competitive, technical)
+├── 03-dossiers/             # L3: source excerpts, transcripts, raw data, methodology
 └── artifact-inventory.md    # Cross-layer tracking (from template)
 ```
 
-The numbered prefixes (`01-`, `02-`, `03-`) keep layers ordered in directory listings
-and make pyramid hierarchy visible at a glance. Files within each directory use
-descriptive names like `source-001.md`, `molecule-scaling-laws.md`, or
-`article-scale-vs-quality.md`.
+The numbered prefixes mirror the pyramid's top-to-bottom orientation: 01 is most consumed, 03 is pulled on demand.
 
 ## Key Principles
 
-1. **Progressive disclosure is symmetric.** The same principle that governs context injection governs artifact structure.
-2. **Each layer is independently consumable.** An article (Layer 3) should make sense on its own; a molecule (Layer 2) should be useful without the published artifact.
-3. **Atoms are recombination primitives.** They are true without their source context — their value is in being recombined into novel syntheses.
-4. **Quality gates are directional.** Material moves up the pyramid only when it meets the gate for the target layer.
-5. **Downward navigation is explicit.** Every Layer 3 artifact should trace back to the Layer 2 molecules and Layer 1 atoms that support it.
+1. **Progressive disclosure is symmetric.** The same three-tier model governs what agents consume (metadata → instructions → resources) and what they produce (summary → analysis → dossiers).
+2. **Each layer is independently consumable.** A product-manager agent reads only the L1 summary. A data-scientist agent reads a single L2 analysis file. A verifier reads L3 dossiers.
+3. **Navigation is explicit.** Every file carries a `SOURCES` section with absolute paths and descriptions — not footnotes, but agent navigation affordances answering *what will I find if I go deeper?*
+4. **Depth varies by mission complexity.** A simple brief may produce only L1 + 2 analysis files. A competitive landscape may need all three layers with multiple files per layer.
+5. **Quality gates are directional.** Material moves from L3 (sources) toward L1 (summary) only when it meets the gate for the target layer.
 
 ## When NOT to use
 
 - Single-turn Q&A with no research artifacts to preserve
 - Tasks producing only ephemeral output (one-off calculations, quick lookups)
-- Workflows where the output IS the source (e.g., you're just collecting data, not synthesizing)
+- Workflows where the source material IS the final output (no synthesis needed)

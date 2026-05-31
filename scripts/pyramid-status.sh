@@ -58,9 +58,9 @@ if [[ ! -d "$PROJECT_DIR" ]]; then
 fi
 
 # --- Search patterns by layer ---
-L1_PATTERNS=("01-*" "1-*" "*sources*" "*atoms*" "*raw*" "source-*")
-L2_PATTERNS=("02-*" "2-*" "*molecule*" "*synthesis*" "*alloy*" "molecule-*")
-L3_PATTERNS=("03-*" "3-*" "*publish*" "*artifact*" "*article*" "*draft*" "*post*" "article-*")
+L1_PATTERNS=("01-*" "1-*" "*summary*" "*dossier*")
+L2_PATTERNS=("02-*" "2-*" "*analysis*" "*market*" "*competitive*" "*technical*" "*feasibility*")
+L3_PATTERNS=("03-*" "3-*" "*dossier*" "*source*" "*transcript*" "*raw*" "*data*")
 
 count_layer() {
     local search_dir="$1"

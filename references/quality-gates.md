@@ -1,13 +1,13 @@
 # Quality Gates: Verification at Each Layer
 
-Each layer of the Artifact Pyramid has a quality gate — a set of checks that material must pass before it can flow to the next layer. These gates prevent premature synthesis, unsupported claims, and broken traceability.
+Each layer of the Artifact Pyramid has a quality gate — checks that material must pass before it can flow between layers. Because the pyramid is consumed **top-down** (L1 → L2 → L3) but produced **bottom-up** (L3 → L2 → L1), gates verify both directions: upward production quality and downward navigability.
 
 ## How to Use Quality Gates
 
 Run the appropriate gate checklist when:
-- Moving atoms into a molecule draft (use the Layer 1→2 gate)
-- Moving a molecule into the publication pipeline (use the Layer 2→3 gate)
-- Auditing a completed artifact pyramid (run all three)
+- Moving from dossiers (L3) into an analysis file (L2) — use Gate C
+- Moving from analysis (L2) into the summary (L1) — use Gate B
+- Auditing a completed artifact pyramid for publication — use Gate A
 
 Each gate has three categories:
 - **Critical** — must pass or the artifact cannot proceed
@@ -16,119 +16,82 @@ Each gate has three categories:
 
 ---
 
-## Gate A: Layer 1 Completeness (Sources → Atoms)
+## Gate A: Summary Integrity (L1 — Summary)
 
-Run this before atoms are used in molecule synthesis.
-
-### Critical
-
-- [ ] **Atomicity**: Every atom contains exactly one claim, fact, quote, or data point. No composite atoms.
-- [ ] **Source binding**: Every atom references a specific source file and location (section, page, timestamp).
-- [ ] **Context independence**: Every atom makes sense without its source document. No "this finding", "the results show", "as discussed above" — substitute the referent.
-
-### Standard
-
-- [ ] **Deduplication**: Identical claims from multiple sources are merged into one atom with multiple source references.
-- [ ] **Contradiction flagging**: Atoms making contradictory claims are cross-referenced with a `contradictions:` field.
-- [ ] **Classification**: Each atom has a domain tag and type label (fact, claim, quote, data, observation).
-- [ ] **Extraction completeness**: The extraction covers the full source, not just confirmatory passages. Counter-evidence is extracted alongside supporting evidence.
-
-### Advisory
-
-- [ ] **Metadata completeness**: Source metadata includes publication date, author, and access timestamp.
-- [ ] **Semantic tagging**: Atoms have descriptive tags that support cross-domain discovery (e.g., `trade-off`, `scaling-law`, `emergent`).
-
----
-
-## Gate B: Layer 2 Integrity (Atoms → Molecules)
-
-Run this before a molecule enters the publication pipeline or is passed to a downstream agent.
+Run this before publishing or delivering the summary.
 
 ### Critical
 
-- [ ] **Emergent claim**: The molecule makes at least one claim that no constituent atom makes individually. If every claim in the molecule can be found in an atom, this is reformatting, not synthesis.
-- [ ] **Full traceability**: Every claim in the molecule body traces to specific atom IDs. No orphan claims.
-- [ ] **No unsupported leaps**: All inferential steps are supported by atoms. When extrapolating beyond the evidence, the molecule explicitly flags it (e.g., "The atoms suggest X, but no atom directly confirms it.").
+- [ ] **Claim traceability**: Every claim in the summary links to a specific Layer 2 analysis file via the SOURCES section. No orphan claims.
+- [ ] **Self-containment**: The summary makes sense without reading lower layers. No "as discussed in the analysis" without a link.
+- [ ] **Implications stated**: The summary doesn't stop at findings — it states what they mean for the intended audience.
 
 ### Standard
 
-- [ ] **Conflict transparency**: If atoms disagree on a point, the molecule surfaces the conflict rather than choosing one side. "Atom-012 says X, but atom-047 says not-X. Both are cited."
-- [ ] **Cross-referencing**: The molecule links to related molecules in other domains when thematic overlap exists.
-- [ ] **Narrative structure**: The molecule has a clear thesis, evidence section, and analytical synthesis — not just a list of atom summaries.
+- [ ] **Audience fit**: Language, depth, and format match the intended audience (PM agent vs. executive vs. technical lead).
+- [ ] **Scope fidelity**: The summary addresses the mission brief's research questions. Out-of-scope findings are flagged as such.
+- [ ] **Internal consistency**: The summary doesn't contradict itself.
 
 ### Advisory
 
-- [ ] **Quantitative precision**: If atoms contain numbers, the molecule preserves and contextualizes them (not "most models improved" but "7 of 12 models improved by ≥5%").
-- [ ] **Source diversity**: The molecule draws from multiple sources within and across domains, not a single paper or viewpoint.
+- [ ] **Version tracking**: The summary has a version identifier.
+- [ ] **Downstream navigation**: Every SOURCES reference answers "what will I find if I go deeper?"
 
 ---
 
-## Gate C: Layer 3 Readiness (Molecules → Published Artifacts)
+## Gate B: Analysis Integrity (L2 → L1)
 
-Run this before publishing or delivering the artifact.
+Run this before an analysis file feeds into the summary.
 
 ### Critical
 
-- [ ] **Audience fit**: The artifact's language, depth, and format match the intended audience. (A blog post for practitioners ≠ a research brief for executives.)
-- [ ] **End-to-end traceability**: Every factual claim in the artifact traces through a molecule to a source atom. No claim lacks an evidentiary chain.
-- [ ] **Internal consistency**: The artifact does not contradict itself. If it presents conflicting views, it does so deliberately with framing (e.g., "Researchers disagree on this point...").
+- [ ] **Full traceability**: Every claim in the analysis file traces to specific Layer 3 sources via the SOURCES section.
+- [ ] **Self-containment**: Each analysis file makes sense on its own — a consumer reading only this file should understand the dimension.
+- [ ] **Interpretive value**: The analysis adds value beyond raw data. If it's just reformatted dossiers, it's not analysis.
 
 ### Standard
 
-- [ ] **Review completion**: The artifact has been reviewed for factual accuracy, clarity, and completeness.
-- [ ] **Version tracking**: The artifact has a version identifier and, if significant, a changelog entry.
-- [ ] **Format compliance**: The artifact meets the target platform's formatting standards (metadata, SEO fields, image specs, etc.).
+- [ ] **Conflict transparency**: If sources disagree, the analysis surfaces the conflict rather than picking one side.
+- [ ] **Narrative structure**: The analysis has a clear thesis, evidence section, and conclusion.
+- [ ] **Quantitative precision**: Numbers are preserved and contextualized (not "most showed improvement" but "7 of 12 improved by ≥5%").
 
 ### Advisory
 
-- [ ] **Downstream discoverability**: The artifact links back to its source molecules and atoms, enabling consumers to drill deeper.
-- [ ] **Measurable outcome**: For decision-oriented artifacts, the expected outcome or acceptance criteria are stated.
+- [ ] **Source diversity**: The analysis draws from multiple sources, not a single dossier.
+- [ ] **Cross-dimension links**: Analysis files reference each other when findings overlap.
 
 ---
 
-## Running Gates with the CLI
+## Gate C: Dossier Completeness (L3 → L2)
 
-The `pyramid-status.sh` script performs a structural coverage audit — it checks how many files exist at each layer and whether cross-references between them resolve:
+Run this before dossiers feed into analysis files.
 
-```bash
-# Full structural audit of a research project directory
-scripts/pyramid-status.sh ./my-research-project
+### Critical
 
-# Machine-readable output
-scripts/pyramid-status.sh --json ./my-research-project
-```
+- [ ] **Source attribution**: Every dossier entry has source metadata (URL, timestamp, title, author, capture date).
+- [ ] **Faithful extraction**: Extracts are faithful to the original. No misrepresentation or cherry-picking.
+- [ ] **Methodology documentation**: How was the data collected, processed, or transcribed?
 
-The script reports:
-- **Counts** by layer (sources, atoms, molecules, artifacts)
-- **Quality warnings** for markdown files over 5 lines that lack YAML frontmatter
-- **Broken cross-references** (`[[wikilinks]]` or `[atom-NNN]` patterns that don't resolve)
+### Standard
 
-**Important: The script checks structural coverage, not gate-level quality.** A "Complete" verdict means files exist in the right naming pattern — it does NOT mean the content passes Gate A, B, or C criteria. Use the checklists above for gate-level verification. The script is a triage tool: run it first to find structural gaps, then apply the quality gate checklists for substantive review.
+- [ ] **Organizational discoverability**: Dossiers are organized for consumption (not a raw dump). Named, attributed, searchable.
+- [ ] **Coverage completeness**: The dossier layer covers all sources referenced by analysis files above it.
+- [ ] **Contradictory evidence**: Counter-evidence to expected findings is included, not suppressed.
+
+### Advisory
+
+- [ ] **Metadata completeness**: Publication date, author, access timestamp for every source.
+- [ ] **Semantic tagging**: Descriptive tags for cross-discovery.
 
 ---
 
 ## Gate Failure Recovery
 
-### Gate A failures (Layer 1)
-
-| Failure | Recovery |
-|---|---|
-| Composite atom | Split into individual atoms |
-| Missing source | Re-extract from source, add reference |
-| Context-dependent atom | Rewrite to be self-standing |
-
-### Gate B failures (Layer 2)
-
-| Failure | Recovery |
-|---|---|
-| No emergent claim | Re-examine atoms for novel connections. If none exists, the material isn't ready for molecule status — keep at atom layer. |
-| Orphan claim | Either add the supporting atom (re-extract from source) or remove the claim. |
-| Conflict hidden | Surface the conflict with `contradictions:` references |
-
-### Gate C failures (Layer 3)
-
-| Failure | Recovery |
-|---|---|
-| Broken traceability | Trace the claim backward through the pyramid. If the chain is broken, add the missing molecule or atom. |
-| Audience mismatch | Rewrite or re-format for the target audience |
-| Internal inconsistency | Reconcile conflicting claims or add framing that explains the tension |
+| Gate | Failure | Recovery |
+|------|---------|----------|
+| A | Orphan claim (no L2 link) | Either add the supporting analysis file or remove the claim |
+| A | Audience mismatch | Rewrite or re-format for the target audience |
+| B | No interpretive value | Re-examine: reformatted dossiers aren't analysis. Find the thesis. |
+| B | Orphan claim (no L3 link) | Either add the supporting dossier or remove the claim |
+| C | Missing source attribution | Re-extract from source, add metadata |
+| C | Cherry-picked evidence | Go back to sources, include contradicting evidence |

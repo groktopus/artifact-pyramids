@@ -1,249 +1,203 @@
 # Pipeline Stages: The Three Layers in Detail
 
-## Overview
+## Layer Numbering Convention
 
-The Artifact Pyramid has three layers. Material flows **bottom-up** during production (collect → extract → synthesize → polish). Consumers navigate **top-down** during consumption (read → drill → verify).
+The Artifact Pyramid numbers layers **top-down**, matching the Agent Skills input model:
 
-```
-PRODUCTION FLOW (bottom-up)
-
-  Layer 3 ┌───────────────────────────────────────────┐
-          │  Polish: molecules → publishable artifacts  │
-          └───────────────────────┬───────────────────┘
-  Layer 2 ┌───────────────────────┴───────────────────┐
-          │  Synthesize: atoms → connected narratives   │
-          └───────────────────────┬───────────────────┘
-  Layer 1 ┌───────────────────────┴───────────────────┐
-          │  Collect + Extract: sources → atoms         │
-          └───────────────────────────────────────────┘
-
-
-CONSUMPTION FLOW (top-down)
-
-  Layer 3 ┌───────────────────────────────────────────┐
-          │  Scan: does this artifact answer my         │
-          │  question?                                  │
-          └───────────────────────┬───────────────────┘
-  Layer 2 ┌───────────────────────┴───────────────────┐
-          │  Study: what claims support this?           │
-          │  Are they well-supported?                   │
-          └───────────────────────┬───────────────────┘
-  Layer 1 ┌───────────────────────┴───────────────────┐
-          │  Verify: where does this claim come from?   │
-          │  Is the source reliable?                    │
-          └───────────────────────────────────────────┘
-```
+| | Agent Skills (Input) | Artifact Pyramid (Output) |
+|---|---|---|
+| Level 1 | Skill metadata (~100 tokens) | **Summary** — the entry point, most distilled |
+| Level 2 | Skill instructions (<5000 tokens) | **Analysis Collection** — detail on demand |
+| Level 3 | Reference files (loaded as needed) | **Detailed Dossiers** — the full evidentiary base |
 
 ---
 
-## Layer 1: Raw Sources & Atoms
+## Layer 1: Summary
 
 ### Purpose
-Establish the evidentiary foundation. Every claim in the upper layers must trace back to a specific atom and source.
+The entry point for every consuming agent. A single file that states the research question, key findings, and most important implications. No evidence, methodology, or supporting data — those live one layer down.
 
-### Inputs
-- Web pages, PDFs, academic papers, transcripts, logs, datasets
-- Any raw material from which knowledge can be extracted
+### Format
+A single markdown file, typically a few paragraphs to a few pages.
 
-### Transformations
+### Contents
+- Research question (restated from mission brief)
+- Key findings (3-5 bullet points or short paragraphs)
+- Implications (what this means for the audience)
+- **SOURCES section** at the bottom linking to Layer 2 analysis files:
 
-| Transformation | Description | Example |
-|---|---|---|
-| **Capture** | Fetch and preserve source material with metadata | `get paper.pdf → paper.pdf + paper-metadata.json` |
-| **Extract** | Pull atomic claims, facts, quotes, and data points | `paper.pdf → atom-001: "Model X achieves 94.2% accuracy on benchmark Y"` |
-| **Classify** | Tag atoms with domain, type (fact/quote/claim/data), source reference | `atom-001 → {domain: "nlp", type: "claim", source: "paper.pdf", tags: ["accuracy", "benchmark"]}` |
-| **Deduplicate** | Merge identical claims from different sources, flag contradictions | `source-A says X, source-B says not-X → flag contradiction` |
+```
+SOURCES (LAYER 2 NAVIGATION)
+research/analysis/market-position.md
+ -> Competitor mapping and market share analysis
 
-### Outputs
-- **Sources**: Captured files with metadata (URL, timestamp, title, author)
-- **Atoms**: Individual knowledge units, each a single context-independent claim
-- **Atom Registry**: A directory or inventory file mapping atom IDs to sources
-
-### Atom Format
-
-```yaml
-atom-001:
-  content: "Model X achieves 94.2% accuracy on benchmark Y"
-  type: claim
-  domain: natural-language-processing
-  source: paper-001
-  source_location: "Section 4.2, Table 1"
-  tags: [accuracy, benchmark, model-x]
-  contradictions: []
-  extracted_at: 2026-05-31
+research/analysis/technical-feasibility.md
+ -> Architecture evaluation
 ```
 
-### Quality Gate (to pass to Layer 2)
+### Who Consumes
+- Product-manager agents (strategic orientation, no technical depth needed)
+- Executives (headline-level decisions)
+- Quick scanners deciding whether to go deeper
 
-- [ ] Each atom contains exactly one claim or fact
-- [ ] Each atom is context-independent (makes sense without its source)
-- [ ] Each atom has a source reference
-- [ ] Atoms are deduplicated (no identical claims from different sources)
-- [ ] Known contradictions are flagged
-- [ ] Atoms are classified by domain
+### Quality Gate (Gate A)
 
-### Common Pitfalls
-
-- **Composite atoms**: "Model X is fast, accurate, and energy-efficient" is three atoms, not one
-- **Context-dependent atoms**: "This finding was significant" — significant according to whom, in what context?
-- **Missing source attribution**: An atom without a source cannot be verified
-- **Premature synthesis**: Extracting interpretations instead of observations ("The data suggests..." rather than "The data shows X=0.94")
+- [ ] Every claim in the summary links to a specific Layer 2 analysis file
+- [ ] The summary contains no unsupported assertions — everything traces downward
+- [ ] The summary is self-contained (makes sense without lower layers)
+- [ ] Implications are stated explicitly, not buried in findings
 
 ---
 
-## Layer 2: Molecules & Syntheses
+## Layer 2: Analysis Collection
 
 ### Purpose
-Transform atoms into connected, interpretive narratives. A molecule is a structured synthesis that produces understanding a single atom cannot provide.
+Self-contained analysis files, each covering a specific dimension of the research. A consumer who needs only one dimension loads that single file and nothing else.
 
-### Inputs
-- Atoms from Layer 1 (the raw material)
-- Existing molecules (for cross-domain alloys)
-- Domain knowledge and analytical frameworks
+### Format
+Individual markdown files, one per research dimension. Each is independently consumable.
 
-### Transformations
+### Typical Dimensions
+- Market analysis (size, trends, segmentation)
+- Competitive landscape (positioning, strengths, gaps)
+- Technical feasibility (architecture, constraints, trade-offs)
+- Risk assessment (uncertainties, failure modes, mitigations)
+- Regulatory analysis (compliance, jurisdictional issues)
 
-| Transformation | Description | Example |
-|---|---|---|
-| **Cluster** | Group related atoms by domain, theme, or argument | Collect all atoms about "attention mechanisms" |
-| **Connect** | Link atoms causally, contrastively, or hierarchically | "Atom A (attention improves recall) → Atom B (attention is expensive) → trade-off" |
-| **Interpret** | Add analytical context — what these atoms mean together | "The attention-efficiency trade-off suggests a Pareto frontier" |
-| **Cross-link** | Connect to molecules from other domains | "This same trade-off appears in neuromorphic computing" |
+### Contents
+- Thesis or research question for this dimension
+- Analysis narrative with supporting evidence
+- Data visualizations or tables as needed
+- **SOURCES section** at the bottom linking to Layer 3 dossiers:
 
-### Outputs
-- **Molecules**: Structured documents that synthesize atoms into arguments
-- **Cross-domain Alloys**: Molecules that bridge two or more domains
-- **Synthesis Map**: A graph showing how atoms connect within and across molecules
+```
+SOURCES (LAYER 3 NAVIGATION)
+research/dossiers/competitor-profiles.md
+ -> Market-by-market competitive positioning data
 
-### Molecule Format
-
-Each molecule is a markdown document with:
-
-```markdown
-# Molecule: The Attention-Efficiency Trade-off
-
-**Domains:** natural-language-processing, hardware-optimization
-
-## Thesis
-Transformer attention improves recall but the quadratic cost
-creates a fundamental efficiency ceiling.
-
-## Supporting Evidence
-- [atom-023]: Attention mechanism recall improvement (83→94%)
-- [atom-047]: Self-attention is O(n²) in sequence length
-- [atom-089]: Sparse attention reduces cost to O(n log n)
-
-## Synthesis
-The attention literature reveals a consistent pattern: architectural
-improvements that boost recall consistently increase computational
-cost. This is not a bug to be fixed but a fundamental trade-off
-governed by the information-theoretic limits of the attention
-mechanism. Sparse and linear attention variants don't eliminate the
-trade-off; they shift where on the Pareto frontier you operate.
-
-## Cross-references
-- [[Molecule: Efficient Transformer Architectures]]
-- [[Molecule: Information Theory in Deep Learning]]
-
-## Source Atoms
-atom-023, atom-047, atom-089, atom-112, atom-143
+research/dossiers/interview-transcripts.md
+ -> Customer interview transcripts referenced in Section 2
 ```
 
-### Quality Gate (to pass to Layer 3)
+### Who Consumes
+- Domain-specialist agents (data scientist reads data analysis only)
+- In-depth researchers (need one dimension, not the full picture)
+- Downstream agents composing cross-domain syntheses
 
-- [ ] Molecule makes at least one claim no constituent atom makes individually
-- [ ] Every claim in the molecule traces to specific atoms
-- [ ] No leaps unsupported by atoms (if you're guessing, say so)
-- [ ] Cross-references to related molecules are explicit
+### Quality Gate (Gate B)
+
+- [ ] Each analysis file is self-contained (makes sense without surrounding files)
+- [ ] Every claim traces to specific Layer 3 sources
+- [ ] Analysis adds interpretive value beyond raw data
 - [ ] Conflicting evidence is surfaced, not buried
-- [ ] The synthesis adds value beyond its atoms (re-formatting isn't synthesis)
-
-### Common Pitfalls
-
-- **Atom restatement**: A molecule that just paraphrases its atoms in paragraph form isn't synthesis — it's formatting
-- **Unsupported claims**: "This proves that..." when the atoms only suggest correlation
-- **Domain isolation**: Failing to cross-reference related molecules leaves insight on the table
-- **Synthesis by omission**: Cherry-picking only supporting atoms and ignoring contradicting ones
+- [ ] Layer 3 navigation (SOURCES) is complete
 
 ---
 
-## Layer 3: Published Artifacts
+## Layer 3: Detailed Dossiers
 
 ### Purpose
-Deliver the synthesized knowledge to an audience. Articles, presentations, reports, documentation, and decisions that are complete, polished, and actionable.
+The broadest layer. Source excerpts, raw data tables, interview transcripts, methodology notes. A reference library that consuming agents pull from as needed — not intended for linear reading.
 
-### Inputs
-- Molecules from Layer 2
-- Cross-domain alloys
-- Audience requirements (who will consume this, and in what format)
+### Format
+Multiple files of varying types: markdown notes, raw data exports, captured pages, transcript extracts.
 
-### Transformations
+### Typical Contents
+- Source excerpts (annotated with source metadata)
+- Raw data tables
+- Interview or meeting transcripts
+- Methodology documentation
+- Literature review notes
+- Dataset descriptions
 
-| Transformation | Description | Example |
-|---|---|---|
-| **Synthesize** | Select and order molecules for narrative flow | Pick 3 molecules that tell a coherent story |
-| **Polish** | Write in the target voice, add examples, adjust for audience | Convert research notes → blog post tone |
-| **Review** | Fact-check claims against source atoms, copy-edit | Every claim traces back through molecule → atom → source |
-| **Format** | Render in the output medium | Markdown → HTML → Ghost CMS, or slides → presentation |
-| **Publish** | Version, release, and announce | Git tag + GitHub release + social media |
+### Who Consumes
+- Validators (fact-checking claims from upper layers)
+- Deep-dive researchers (need the full evidentiary base)
+- Downstream analysis tools (embedding pipelines, graph databases)
 
-### Outputs
-- **Articles**: Blog posts, papers, essays (one artifact = one coherent argument)
-- **Presentations**: Slides, talks, demos
-- **Specifications**: Design docs, architecture decisions, technical RFCs
-- **Reports**: Analysis documents, findings briefs, decision memos
-- **Code**: Libraries, tools, implementations derived from research
+### Quality Gate (Gate C)
 
-### Quality Gate (for delivery)
+- [ ] Every source has attribution (URL, timestamp, author, title)
+- [ ] Extracts are faithful to the original (no misrepresentation)
+- [ ] Methodology is documented (how was this data collected/processed?)
+- [ ] Dossiers are organized for discoverability (not a raw dump)
 
-- [ ] Artifact is appropriate for its intended audience
-- [ ] Every factual claim traces back to a Layer 2 molecule (which traces to Layer 1 atoms)
-- [ ] Conflicting evidence is addressed (not hidden)
-- [ ] The artifact is self-consistent and internally coherent
-- [ ] Format meets the target platform's standards
-- [ ] The artifact is versioned and discoverable
+---
 
-### Common Pitfalls
+## Production Flow: How the Pyramid Gets Built
 
-- **Missing traceability**: Claims in the article that can't be traced to molecules or atoms
-- **Audience mismatch**: Writing for domain experts when the audience is general (or vice versa)
-- **Over-condensation**: Removing so much context that the artifact becomes misleading
-- **Silver bullet syndrome**: One study doesn't prove a rule — the pyramid should prevent this by requiring cross-referenced molecules
+The pyramid is not a formatting template applied after research is complete. It is the natural output of a recursive research methodology:
+
+```
+Mission Brief
+  ↓
+1. Mission Interpolation
+   Reformulate the brief into explicit research questions,
+   scope boundaries, and a register of known unknowns.
+  ↓
+2. Systematic Gathering
+   Capture sources, extract evidence, organize into preliminary
+   drafts of Layer 3 dossiers.
+  ↓
+3. Draft Layer 2 Analysis
+   From dossiers, compose per-dimension analysis files.
+   Add SOURCES sections linking back to dossiers.
+  ↓
+4. Draft Layer 1 Summary
+   From analysis files, compose the summary. Add SOURCES
+   section linking to analysis files.
+  ↓
+5. Gap Evaluation
+   For each gap, evaluate: is it in-scope? Would filling it
+   change any conclusion in layers above? Does it add depth
+   or just bulk?
+  ↓
+6. Recurse (if needed)
+   Go deeper on open gaps. Update layers as new evidence arrives.
+  ↓
+Publish
+```
+
+The key insight: **depth is a function of mission complexity, not a fixed template.** A simple technology explanation brief may produce only a summary and two analysis files. A competitive landscape analysis may require all three layers plus multiple files per layer.
 
 ---
 
 ## Cross-layer Navigation
 
-### Top-Down (Consumption)
+### Explicit SOURCES Format
+
+Every file carries this at the bottom:
 
 ```
-Article: "Attention mechanisms are approaching fundamental limits"
-  ↓ reads
-Molecule: The Attention-Efficiency Trade-off
-  ↓ follows trace
-Atom-047: "Self-attention is O(n²) in sequence length"
-  ↓ verifies source
-Source: "Efficient Transformers: A Survey" (Tay et al., 2022)
+SOURCES (LAYER {N} NAVIGATION)
+path/to/file.md
+ -> One-line description answering "what will I find if I go deeper?"
+
+path/to/another-file.md
+ -> Another dimension or supporting evidence
 ```
 
-### Bottom-Up (Production)
+### Consumption Flow
 
 ```
-Source: "Efficient Transformers" paper
-  ↓ extract
-Atom-047: "Self-attention is O(n²)"
-Atom-089: "Sparse attention reduces to O(n log n)"
-  ↓ synthesize
-Molecule: The Attention-Efficiency Trade-off
-  ↓ polish + format
-Article: "Attention mechanisms are approaching fundamental limits"
+L1 Summary
+  ↓ reads SOURCES, loads only the analysis it needs
+L2 market-position.md
+  ↓ reads SOURCES, loads dossiers to verify claims
+L3 competitor-profiles.md
 ```
 
-### The Auditing Loop
+### Production Flow
 
-The pyramid supports auditing in both directions:
+```
+L3 Source capture
+  ↓ compose analysis
+L2 Analysis Collection
+  ↓ synthesize findings
+L1 Summary
+```
 
-1. **Forward audit**: Start from sources → every atom is valid → every molecule is sound → the article is trustworthy
-2. **Backward audit**: Start from the article → for each claim, find the molecule → for each claim in the molecule, find the atom → for each atom, verify the source
+### Auditing
 
-Either direction should produce a complete, documented chain.
+1. **Forward audit**: Start from dossiers → every source is valid → analysis is sound → summary is trustworthy.
+2. **Backward audit**: Start from summary → for each claim, find the L2 file → for each claim in L2, find the L3 dossier → for each source, verify.
