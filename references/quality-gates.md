@@ -88,20 +88,22 @@ Run this before publishing or delivering the artifact.
 
 ## Running Gates with the CLI
 
-The `pyramid-status.sh` script performs a basic audit against all three gates:
+The `pyramid-status.sh` script performs a structural coverage audit — it checks how many files exist at each layer and whether cross-references between them resolve:
 
 ```bash
-# Full audit of a research project directory
+# Full structural audit of a research project directory
 scripts/pyramid-status.sh ./my-research-project
 
-# Check only Layer 1 completeness
-scripts/pyramid-status.sh --layer 1 ./my-research-project
+# Machine-readable output
+scripts/pyramid-status.sh --json ./my-research-project
 ```
 
 The script reports:
-- **Status per gate** (pass / fail / skip)
 - **Counts** by layer (sources, atoms, molecules, artifacts)
-- **Gaps** (missing atom sources, orphan molecules, untraced claims)
+- **Quality warnings** for markdown files over 5 lines that lack YAML frontmatter
+- **Broken cross-references** (`[[wikilinks]]` or `[atom-NNN]` patterns that don't resolve)
+
+**Important: The script checks structural coverage, not gate-level quality.** A "Complete" verdict means files exist in the right naming pattern — it does NOT mean the content passes Gate A, B, or C criteria. Use the checklists above for gate-level verification. The script is a triage tool: run it first to find structural gaps, then apply the quality gate checklists for substantive review.
 
 ---
 
