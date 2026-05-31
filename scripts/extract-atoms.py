@@ -30,23 +30,26 @@ def split_sentences(text: str) -> list[str]:
     # Normalize whitespace
     text = re.sub(r'\s+', ' ', text).strip()
 
-    # Split on sentence boundaries, preserving abbreviations
-    sentence_end = re.compile(r'(?<!\b(?:Mr|Ms|Mrs|Dr|Prof|Sr|Jr|St|vs|etc|dept|est|approx))'
-                              r'(?<!\b(?:Fig|Table|Section|Eq))'
-                              r'(?<![A-Z][a-z])'
-                              r'[.!?]+'
-                              r'(?=\s+[A-Z"\'(]|$)')
+    # Split on sentence boundaries
+    # Use a simpler approach without variable-length lookbehind
+    sentences = []
+    current = []
+    for word in text.split(' '):
+        current.append(word)
+        if word.endswith('.') or word.endswith('!') or word.endswith('?'):
+            # Check if it's an abbreviation
+            abbrev = {'Mr', 'Ms', 'Mrs', 'Dr', 'Prof', 'Sr', 'Jr', 'St',
+                      'vs', 'etc', 'dept', 'est', 'approx', 'Fig', 'Table',
+                      'Section', 'Eq', 'Inc', 'Ltd', 'Co'}
+            base = word.rstrip('.!?')
+            if base not in abbrev and not base.isdigit():
+                sentences.append(' '.join(current))
+                current = []
 
-    parts = sentence_end.split(text)
-    result = []
-    for part in parts:
-        part = part.strip()
-        if part:
-            # Remove leading punctuation from split artifacts
-            part = part.lstrip('.,!?; ')
-            if part:
-                result.append(part)
-    return result
+    if current:
+        sentences.append(' '.join(current))
+
+    return [s.strip() for s in sentences if s.strip()]
 
 
 def is_claim_candidate(sentence: str) -> bool:
